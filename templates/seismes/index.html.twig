@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+{# 
+/**
+ * Description du fichier : Contrôleur gérant les séismes
+ * @author : Maxime ALBERT et Maryline LE BOT
+ * @version : 1.0
+ */
+#}
+{% block title %}Seismes index{% endblock %}
+
+{% block body %}
+    <h1>Seismes index</h1>
+
+    <form action="{{ path('app_seismes_index') }}" method="POST">
+        <div class="form-group">
+            <label for="pays">Pays :</label>
+            <input type="text" name="pays" id="pays" list="pays-datalist" value="tous">
+            <datalist class="form-control" id="pays-datalist" >
+                <option value="tous">Tous</option>
+                {% for pay in listPays %}
+                    <option value="{{ pay.pays }}">{{ pay.pays }}</option>
+                {% endfor %}
+            </datalist>
+        </div>
+
+        <div class="form-group">
+            <label for="intensite">Intensité max :</label>
+            <select class="form-control" id="intensite" name="intensite">
+                <option value="tous">Tous</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+    </form>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Instant</th>
+                <th>Lat</th>
+                <th>Lon</th>
+                <th>Pays</th>
+                <th>Mag</th>
+                <th>Profondeur</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for seisme in seismes %}
+            <tr>
+                <td>{{ seisme.id }}</td>
+                <td>{{ seisme.instant ? seisme.instant|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ seisme.lat }}</td>
+                <td>{{ seisme.lon }}</td>
+                <td>{{ seisme.pays }}</td>
+                <td>{{ seisme.mag }}</td>
+                <td>{{ seisme.profondeur }}</td>
+                <td>
+                    <a href="{{ path('app_seismes_show', {'id': seisme.id}) }}">show</a>
+                    <a href="{{ path('app_seismes_edit', {'id': seisme.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Pays</th>
+                <th>Mag minimum</th>
+                <th>Mag maximum</th>
+                <th>Mag moyen</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for list in listExtremum %}
+            <tr>
+                <td>{{ list.pays }}</td>
+                <td>{{ list.min_mag }}</td>
+                <td>{{ list.max_mag }}</td>
+                <td>{{ list.avg_mag }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_seismes_new') }}">Create new</a>
+{% endblock %}
